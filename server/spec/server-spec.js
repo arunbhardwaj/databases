@@ -16,7 +16,7 @@ describe('Persistent Node Chat Server', () => {
   beforeAll((done) => {
     dbConnection.connect();
 
-       const tablename = ''; // TODO: fill this out
+       const tablename = 'messages'; // TODO: fill this out
 
     /* Empty the db table before all tests so that multiple tests
      * (or repeated runs of the tests)  will not fail when they should be passing
@@ -65,8 +65,10 @@ describe('Persistent Node Chat Server', () => {
 
   it('Should output all messages from the DB', (done) => {
     // Let's insert a message into the db
-       const queryString = '';
-       const queryArgs = [];
+    const usersQueryString = 'INSERT INTO users VALUES (default, \'anon\')';
+    const roomsQueryString = 'INSERT INTO rooms VALUES (default, \'default\')';
+    const queryString = 'INSERT INTO messages VALUES (default, (SELECT id FROM users WHERE users.username = \'anon\'), \'hi this is anon\', (SELECT id FROMS rooms WHERE rooms.name = \'default\')';
+    const queryArgs = [];
     /* TODO: The exact query string and query args to use here
      * depend on the schema you design, so I'll leave them up to you. */
     dbConnection.query(queryString, queryArgs, (err) => {
