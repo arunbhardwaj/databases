@@ -8,6 +8,14 @@ var cors = require('cors');
 // Router
 var router = require('./routes.js');
 
+db.connect((err) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log('MySQL was connected successfully.');
+  }
+});
+
 var app = express();
 module.exports.app = app;
 
