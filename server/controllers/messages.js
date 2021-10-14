@@ -7,8 +7,7 @@ module.exports = {
     // const queryString = 'select * from messages';
     // const queryArgs = [];
     models.messages.getAll((err, results) => {
-      res.send(results);
-      res.sendStatus(200);
+      res.status(200).json(results).end();
     });
   },
 
@@ -18,7 +17,7 @@ module.exports = {
       if (err) {
         console.error('THERE WAS AN ERROR', err);
       }
-      res.status(201).json(results);
+      res.status(201).json(results).end();
     });
   }
 };

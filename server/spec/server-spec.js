@@ -1,6 +1,6 @@
 /* You'll need to have MySQL running and your Node server running
  * for these tests to pass. */
-
+const models = require('../models');
 const mysql = require('mysql2');
 const axios = require('axios');
 
@@ -25,7 +25,7 @@ describe('Persistent Node Chat Server', () => {
     /* Empty the db table before all tests so that multiple tests
      * (or repeated runs of the tests)  will not fail when they should be passing
      * or vice versa */
-    dbConnection.query(`truncate ${tablename}`, done);
+    dbConnection.query(`truncate ${tablename}`, done); //Doesn't work if table has constraint foreign keys
   }, 6500);
 
   afterAll(() => {
@@ -43,12 +43,8 @@ describe('Persistent Node Chat Server', () => {
         return axios.post(`${API_URL}/messages`, { username, message, roomname });
       })
       .then(() => {
-        // Now if we look in the database, we should find the posted message there.
-
-        /* TODO: You might have to change this test to get all the data from
-         * your message table, since this is schema-dependent. */
-        const queryString = 'SELECT * FROM messages';
-        const queryArgs = [];
+        const queryString = 'SELECT * FROM messages where messages.text = ? ';
+        const queryArgs = [message];
 
         dbConnection.query(queryString, queryArgs, (err, results) => {
           if (err) {
@@ -69,28 +65,50 @@ describe('Persistent Node Chat Server', () => {
 
   it('Should output all messages from the DB', (done) => {
     // Let's insert a message into the db
-    const usersQueryString = 'INSERT INTO users VALUES (default, \'anon\')';
-    const roomsQueryString = 'INSERT INTO rooms VALUES (default, \'default\')';
-    const queryString = 'INSERT INTO messages VALUES (default, (SELECT id FROM users WHERE users.username = \'anon\'), \'hi this is anon\', (SELECT id FROM rooms WHERE rooms.name = \'default\')';
-    const queryArgs = [];
-    /* TODO: The exact query string and query args to use here
-     * depend on the schema you design, so I'll leave them up to you. */
-    dbConnection.query(queryString, queryArgs, (err) => {
+    const username = 'Arun';
+    const message = 'Some random message';
+    const roomname = 'Temp';
+    const getRoomNameFromId = 'select name from rooms where id = ? ';
+
+    models.messages.create({message: message, roomname: roomname, username: username}, (err, results) => {
       if (err) {
         throw err;
       }
-
-      // Now query the Node chat server and see if it returns the message we just inserted:
-      axios.get(`${API_URL}/messages`)
+      const getMessageFromText = 'select * from messages where messages.text = ?';
+      dbConnection.promise().query(getMessageFromText, message)
         .then((response) => {
-          const messageLog = response.data;
-          expect(messageLog[0].text).toEqual(message);
-          expect(messageLog[0].roomname).toEqual(roomname);
+          const messageReceived = response[0][0];
+          expect(messageReceived.text).toEqual(message);
+          const roomId = messageReceived.roomname_id;
+          dbConnection.promise().query(getRoomNameFromId, roomId)
+            .then((result) => {
+              expect(result[0][0].name).toEqual(roomname);
+            })
+            .catch((err) => {
+              throw err;
+            });
           done();
         })
         .catch((err) => {
           throw err;
         });
     });
+    // dbConnection.query(queryString, queryArgs, (err) => {
+    //   if (err) {
+    //     throw err;
+    //   }
+
+    //   // Now query the Node chat server and see if it returns the message we just inserted:
+    //   axios.get(`${API_URL}/messages`)
+    //     .then((response) => {
+    //       const messageLog = response.data;
+    //       expect(messageLog[0].text).toEqual(message);
+    //       expect(messageLog[0].roomname).toEqual(roomname);
+    //       done();
+    //     })
+    //     .catch((err) => {
+    //       throw err;
+    //     });
+    // });
   });
 });

@@ -19,7 +19,7 @@ module.exports = {
           ? db.promise().query(insertIntoUsers)
           : result;
       })
-      .then((result) => callback(null, result))
+      .then((result) => callback(null, result[0]))
       .catch((err) => callback(err, null));
   },
 };
