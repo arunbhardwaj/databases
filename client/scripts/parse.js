@@ -6,7 +6,7 @@ const myOwnEndpoint = '/classes/messages';
 var Parse = {
   // when swapping endpoints, be sure to swap out how you fetch since they return different data types.
   server:
-  `http://127.0.0.1:3000${myOwnEndpoint}`,
+  `http://localhost:3000${myOwnEndpoint}`,
   // `https://app-hrsei-api.herokuapp.com/api/chatterbox/messages/${window.CAMPUS}`,
 
   create: function(message, successCB, errorCB = null) {

@@ -34,13 +34,13 @@ describe('Persistent Node Chat Server', () => {
 
   it('Should insert posted messages to the DB', (done) => {
     const username = 'Valjean';
-    const message = 'In mercy\'s name, three days is all I need.';
+    const text = 'In mercy\'s name, three days is all I need.';
     const roomname = 'Hello';
     // Create a user on the chat server database.
     axios.post(`${API_URL}/users`, { username })
       .then(() => {
         // Post a message to the node chat server:
-        return axios.post(`${API_URL}/messages`, { username, message, roomname });
+        return axios.post(`${API_URL}/messages`, { username, text, roomname });
       })
       .then(() => {
         const queryString = 'SELECT * FROM messages where messages.text = ? ';
@@ -66,19 +66,19 @@ describe('Persistent Node Chat Server', () => {
   it('Should output all messages from the DB', (done) => {
     // Let's insert a message into the db
     const username = 'Arun';
-    const message = 'Some random message';
+    const text = 'Some random message';
     const roomname = 'Temp';
     const getRoomNameFromId = 'select name from rooms where id = ? ';
 
-    models.messages.create({message: message, roomname: roomname, username: username}, (err, results) => {
+    models.messages.create({text: text, roomname: roomname, username: username}, (err, results) => {
       if (err) {
         throw err;
       }
       const getMessageFromText = 'select * from messages where messages.text = ?';
-      dbConnection.promise().query(getMessageFromText, message)
+      dbConnection.promise().query(getMessageFromText, text)
         .then((response) => {
           const messageReceived = response[0][0];
-          expect(messageReceived.text).toEqual(message);
+          expect(messageReceived.text).toEqual(text);
           const roomId = messageReceived.roomname_id;
           dbConnection.promise().query(getRoomNameFromId, roomId)
             .then((result) => {

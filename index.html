@@ -4,8 +4,13 @@
     <meta charset="utf-8">
     <title>chatterbox</title>
     <link rel="stylesheet" href="client/styles/styles.css">
-    <script src="node_modules/jquery/dist/jquery.js"></script>
-    <script src="node_modules/underscore/underscore.js"></script>
+    <!-- <script src="/node_modules/jquery/dist/jquery.js"></script> -->
+    <script
+  src="https://code.jquery.com/jquery-3.6.0.min.js"
+  integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+  crossorigin="anonymous"></script>
+    <!-- <script src="/node_modules/underscore/underscore.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/underscore@1.13.1/underscore-umd-min.js"></script>
     <script>
       // DO NOT MODIFY THIS CODE
       if (!/(&|\?)username=/.test(window.location.search)) {
@@ -24,7 +29,7 @@
   <body>
     <div id="main">
       <h1>chatterbox</h1>
-      <div class="spinner"><img src="client/images/spiffygif_46x46.gif"></div>
+      <div class="spinner"><img src="/client/images/spiffygif_46x46.gif"></div>
       <div id="rooms">
         Room:
         <select class="room-options">
@@ -41,17 +46,17 @@
       </form>
     </div>
     <div id="chats"></div>
-    <script src="client/env/config.js"></script>
-    <script src="client/scripts/parse.js"></script>
-    <script src="client/scripts/friends.js"></script>
-    <script src="client/scripts/messages.js"></script>
-    <script src="client/scripts/rooms.js"></script>
-    <script src="client/scripts/formView.js"></script>
-    <script src="client/scripts/roomsView.js"></script>
-    <script src="client/scripts/roomView.js"></script>
-    <script src="client/scripts/messageView.js"></script>
-    <script src="client/scripts/messagesView.js"></script>
-    <script src="client/scripts/app.js"></script>
+    <script src="/client/env/config.js"></script>
+    <script src="/client/scripts/parse.js"></script>
+    <script src="/client/scripts/friends.js"></script>
+    <script src="/client/scripts/messages.js"></script>
+    <script src="/client/scripts/rooms.js"></script>
+    <script src="/client/scripts/formView.js"></script>
+    <script src="/client/scripts/roomsView.js"></script>
+    <script src="/client/scripts/roomView.js"></script>
+    <script src="/client/scripts/messageView.js"></script>
+    <script src="/client/scripts/messagesView.js"></script>
+    <script src="/client/scripts/app.js"></script>
     <!-- <script>$(this).css('background-color', 'red');</script> -->
     <script>
       $(() => App.initialize());

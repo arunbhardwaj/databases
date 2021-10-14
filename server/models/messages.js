@@ -1,3 +1,4 @@
+/* eslint-disable quotes */
 var db = require('../db');
 const _ = require('lodash');
 
@@ -14,18 +15,18 @@ module.exports = {
   },
 
   // a function which can be used to insert a message into the database
-  create: function ({ message, username, roomname }, callback) {
+  create: function ({ text, username, roomname }, callback) {
     const checkForUser = `select id from users where username = \'${username}\'`;
     const checkForRoom = `select id from rooms where name = \'${roomname}\'`;
     const insertIntoUsers = `INSERT IGNORE INTO users VALUES (default, \'${username}\');`;
     const insertIntoRooms = `INSERT IGNORE INTO rooms VALUES (default, \'${roomname}\');`;
     const insertIntoMessages = `INSERT INTO messages VALUES (
       default,
-      (SELECT id FROM users WHERE username= ? ),
-      ?,
-      (SELECT id FROM rooms WHERE name= ? )
+      (SELECT id FROM users WHERE username= ? ),` +
+      " ? ," +
+      `(SELECT id FROM rooms WHERE name= ? )
     );`;
-    const queryArgs = [username, message, roomname];
+    const queryArgs = [username, text, roomname];
     // You can import createUser method here to use but it doesn't return a promise
     // Maybe make that
     db.promise().query(checkForUser)

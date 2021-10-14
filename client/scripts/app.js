@@ -40,7 +40,7 @@ var App = {
 
   fetch: function(callback = ()=>{}) {
     Parse.readAll((data) => {
-      Messages._store(data.results);
+      Messages._store(data);
     });
     callback();
   },
