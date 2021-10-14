@@ -6,15 +6,14 @@ module.exports = {
   get: function (req, res) {
     // const queryString = 'select * from messages';
     // const queryArgs = [];
-    res.sendStatus(200);
-    // res.send('hello');
-    // return;
+    models.messages.getAll((err, results) => {
+      res.send(results);
+      res.sendStatus(200);
+    });
   },
 
   // a function which handles posting a message to the database
   post: function (req, res) {
-    let body = req.body;
-    console.log(typeof body);
     models.messages.create(req.body, (err, results) => {
       if (err) {
         console.error('THERE WAS AN ERROR', err);

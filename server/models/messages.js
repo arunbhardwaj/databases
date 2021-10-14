@@ -1,51 +1,48 @@
 var db = require("../db");
+const _ = require("lodash");
 
 module.exports = {
   getAll: function (callback) {
-    const queryString = 'SELECT * FROM messages';
-    const queryArgs = [];
+    const queryString = 'SELECT * FROM messages;';
+    db.promise().query(queryString)
+      .then(results => callback(null, results[0])) // There has to be a better way than using 0-index?
+      .catch(err => callback(err, null));
 
-    db.query(queryString, queryArgs, (err, results) => {
-      if (err) {
-        callback(err, null);
-      } else {
-        callback(null, results);
-      }
-    });
+
     // db.end();
   }, // a function which produces all the messages .... from the database???
   create: function ({ text, username, roomname }, callback) {
-    const queryString1 = `INSERT IGNORE INTO users VALUES (default, \'${username}\');`;
-    const queryString2 = `INSERT IGNORE INTO rooms VALUES (default, \'${roomname}\');`;
-    const queryString3 = `INSERT INTO messages VALUES (
+    const checkForUser = `select id from users where username = \'${username}\'`;
+    const checkForRoom = `select id from rooms where name = \'${roomname}\'`;
+    const insertIntoUsers = `INSERT IGNORE INTO users VALUES (default, \'${username}\');`;
+    const insertIntoRooms = `INSERT IGNORE INTO rooms VALUES (default, \'${roomname}\');`;
+    const insertIntoMessages = `INSERT INTO messages VALUES (
       default,
       (SELECT id FROM users WHERE username=\'${username}\'),
-      \'${text}\',
+      \"${text}\",
       (SELECT id FROM rooms WHERE name=\'${roomname}\')
     );`;
-    const queryArgs = [];
-    db.query(queryString1, queryArgs, (err, results) => {
-      console.log({'querystring1': queryString1});
-      if (err) {
-        callback(err, null);
-      }
-      //TODO: check if a user exists by that username first before inserting into
-      // the database. This will avoid autoincrementing for the same user, making
-      // the next brand new user to enter the database have a larger id than
-      // desired.
-      db.query(queryString2, queryArgs, (err, results) => {
-        console.log({'querystring2': queryString2});
-        if (err) {
-          callback(err, null);
-        }
-        db.query(queryString3, queryArgs, (err, results) => {
-          console.log({'queryString3': queryString3});
-          if (err) {
-            callback(err, null);
-          }
-          callback(null, results);
-        });
-      });
-    });
+
+    // You can import createUser method here to use but it doesn't return a promise
+    // Maybe make that
+    db.promise().query(checkForUser)
+      .then(result => {
+        return _.isEmpty(result[0][0]) // If there were no users found
+          ? db.promise().query(insertIntoUsers)
+          : db.promise().query(checkForRoom);
+      })
+      .then(result => {
+        return !_.isEmpty(result[0]) // If you inserted into Users and didn't check Rooms
+          ? db.promise().query(checkForRoom)
+          : result; // you didn't check the rooms so pass on checkForRoomPromise
+      })
+      .then(result => {
+        return _.isEmpty(result[0][0]) // if there were no rooms found
+          ? db.promise().query(insertIntoRooms)
+          : result; // you found a room and didn't need to insert into Rooms
+      })
+      .then(result => db.promise().query(insertIntoMessages))
+      .then(result => callback(null, result))
+      .catch(err => callback(err, null));
   }, // a function which can be used to insert a message into the database
 };
