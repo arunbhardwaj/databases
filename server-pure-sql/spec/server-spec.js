@@ -1,6 +1,6 @@
 /* You'll need to have MySQL running and your Node server running
  * for these tests to pass. */
-const models = require('../controllers');
+const models = require('../models');
 const mysql = require('mysql2');
 const axios = require('axios');
 
@@ -20,7 +20,7 @@ describe('Persistent Node Chat Server', () => {
       }
     });
 
-    const tablename = 'Messages'; // TODO: fill this out
+    const tablename = 'messages'; // TODO: fill this out
 
     /* Empty the db table before all tests so that multiple tests
      * (or repeated runs of the tests)  will not fail when they should be passing
@@ -70,7 +70,7 @@ describe('Persistent Node Chat Server', () => {
     const roomname = 'Temp';
     const getRoomNameFromId = 'select name from rooms where id = ? ';
 
-    models.messages.get({text: text, roomname: roomname, username: username}, (err, results) => {
+    models.messages.create({text: text, roomname: roomname, username: username}, (err, results) => {
       if (err) {
         throw err;
       }

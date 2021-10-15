@@ -35,9 +35,9 @@ var Message = db.define('Message', {
   }
 });
 
-User.hasMany(Message, {foreignKey: {name: 'UserId', allowNull: false, autoIncrement: true}, onDelete: 'CASCADE'});
+User.hasMany(Message, {foreignKey: {name: 'UserId', allowNull: false}, onDelete: 'CASCADE'});
 Room.hasMany(Message, {foreignKey: 'RoomId'});
-Message.belongsTo(User, {foreignKey: {name: 'UserId', allowNull: false, autoIncrement: true}, onDelete: 'CASCADE'});
+Message.belongsTo(User, {foreignKey: {name: 'UserId', allowNull: false}, onDelete: 'CASCADE'});
 Message.belongsTo(Room, {foreignKey: 'RoomId'});
 
 // User.sync();
