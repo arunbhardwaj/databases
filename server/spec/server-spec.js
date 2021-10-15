@@ -44,7 +44,7 @@ describe('Persistent Node Chat Server', () => {
       })
       .then(() => {
         const queryString = 'SELECT * FROM messages where messages.text = ? ';
-        const queryArgs = [message];
+        const queryArgs = [text];
 
         dbConnection.query(queryString, queryArgs, (err, results) => {
           if (err) {
@@ -54,7 +54,7 @@ describe('Persistent Node Chat Server', () => {
           expect(results.length).toEqual(1);
 
           // TODO: If you don't have a column named text, change this test.
-          expect(results[0].text).toEqual(message);
+          expect(results[0].text).toEqual(text);
           done();
         });
       })

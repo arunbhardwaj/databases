@@ -9,7 +9,7 @@
     "node": ">=4.0.0"
   },
   "scripts": {
-    "start": "node ./server/app.js",
+    "start": "node ./server-pure-sql/app.js",
     "client": "npx live-server",
     "start:es6": "npx babel-node ./server/app.js",
     "test": "jest",
@@ -24,6 +24,7 @@
     "mysql": "^2.18.1",
     "mysql2": "^2.2.5",
     "sequelize": "^6.7.0",
+    "sequelize-cli": "^6.2.0",
     "underscore": "^1.11.0"
   },
   "devDependencies": {
